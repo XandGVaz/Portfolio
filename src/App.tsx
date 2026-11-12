@@ -3,10 +3,13 @@ import { ui, type Lang } from './content.ts'
 import { load, save } from './storage.ts'
 import Header from './components/Header.tsx'
 import Hero from './components/Hero.tsx'
+import About from './components/About.tsx'
 import Projects from './components/Projects.tsx'
 import ExperienceSection from './components/Experience.tsx'
 import Skills from './components/Skills.tsx'
 import Contact from './components/Contact.tsx'
+import JourneyPage from './components/JourneyPage.tsx'
+import { useHashRoute } from './useHashRoute.ts'
 
 type Theme = 'light' | 'dark'
 
@@ -26,6 +29,7 @@ export default function App() {
   const [lang, setLang] = useState<Lang>(initialLang)
   const [theme, setTheme] = useState<Theme>(initialTheme)
   const t = ui[lang]
+  const route = useHashRoute()
 
   useEffect(() => {
     document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en'
@@ -52,11 +56,18 @@ export default function App() {
     <>
       <Header t={t} lang={lang} theme={theme} onToggleLang={toggleLang} onToggleTheme={toggleTheme} />
       <main>
-        <Hero t={t} />
-        <Projects t={t} lang={lang} />
-        <ExperienceSection t={t} lang={lang} />
-        <Skills t={t} lang={lang} />
-        <Contact t={t} />
+        {route.page === 'journey' ? (
+          <JourneyPage slug={route.slug} t={t} lang={lang} />
+        ) : (
+          <>
+            <Hero t={t} lang={lang} />
+            <About t={t} lang={lang} />
+            <ExperienceSection t={t} lang={lang} />
+            <Projects t={t} lang={lang} />
+            <Skills t={t} lang={lang} />
+            <Contact t={t} lang={lang} />
+          </>
+        )}
       </main>
       <footer className="footer">
         <div className="container">

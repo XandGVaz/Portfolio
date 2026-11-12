@@ -1,7 +1,8 @@
-import { profile, type UI } from '../content.ts'
+import { profile, type Lang, type UI } from '../content.ts'
 import { GitHubIcon, LinkedInIcon, MailIcon } from './Icons.tsx'
+import ResumeMenu from './ResumeMenu.tsx'
 
-export default function Contact({ t }: { t: UI }) {
+export default function Contact({ t, lang }: { t: UI; lang: Lang }) {
   return (
     <section id="contact" className="section">
       <div className="container">
@@ -18,6 +19,7 @@ export default function Contact({ t }: { t: UI }) {
             <a className="btn btn-ghost" href={profile.github} target="_blank" rel="noreferrer">
               <GitHubIcon /> GitHub
             </a>
+            <ResumeMenu t={t} lang={lang} />
           </div>
         </div>
       </div>

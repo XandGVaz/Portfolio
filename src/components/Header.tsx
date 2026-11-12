@@ -1,5 +1,6 @@
 import type { Lang, UI } from '../content.ts'
 import { MoonIcon, SunIcon } from './Icons.tsx'
+import tux from '../assets/tux.webp'
 
 interface Props {
   t: UI
@@ -14,12 +15,15 @@ export default function Header({ t, lang, theme, onToggleLang, onToggleTheme }: 
     <header className="header">
       <div className="container header-inner">
         <a href="#top" className="brand">
-          <span className="brand-mark">VV</span>
+          <span className="brand-mark">
+            <img src={tux} alt="" width={26} height={26} />
+          </span>
           <span className="brand-name">Vitor Vaz</span>
         </a>
         <nav className="nav" aria-label="Principal">
-          <a href="#projects">{t.nav.projects}</a>
+          <a href="#about">{t.nav.about}</a>
           <a href="#experience">{t.nav.experience}</a>
+          <a href="#projects">{t.nav.projects}</a>
           <a href="#skills">{t.nav.skills}</a>
           <a href="#contact">{t.nav.contact}</a>
         </nav>

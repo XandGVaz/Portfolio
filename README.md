@@ -1,13 +1,13 @@
 # Portfólio — Vitor Alexandre Garcia Vaz
 
 Portfólio pessoal em **React + TypeScript + Vite**, publicado no GitHub Pages:
-**https://xandgvaz.github.io/Portifolio/**
+**https://xandgvaz.github.io/Portfolio/**
 
 ## Desenvolvimento
 
 ```bash
 npm install
-npm run dev       # servidor local em http://localhost:5173/Portifolio/
+npm run dev       # servidor local em http://localhost:5173/Portfolio/
 npm run build     # typecheck + build de produção em dist/
 npm run preview   # serve o dist/ localmente
 ```
@@ -26,3 +26,10 @@ publica no GitHub Pages a cada push na `main`. Em *Settings → Pages*, a fonte 
 como **GitHub Actions**.
 
 > Se o repositório for renomeado, atualize o `base` em [`vite.config.ts`](vite.config.ts).
+
+## Créditos
+
+O ícone do Tux (cabeçalho e favicon) foi gerado a partir do
+[`Tux.svg` do Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Tux.svg),
+criado por Larry Ewing (lewing@isc.tamu.edu) com o The GIMP, na versão vetorial de
+Simon Budig e Garrett LeSage.

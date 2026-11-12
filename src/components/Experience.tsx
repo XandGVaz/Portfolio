@@ -1,45 +1,163 @@
-import { awards, experience, type Lang, type UI } from '../content.ts'
+import { useEffect, useRef, type ReactNode } from 'react'
+import { awards, experience, projects, type JourneyIcon, type Lang, type Project, type UI } from '../content.ts'
+import {
+  AntennaIcon,
+  ArrowIcon,
+  CartIcon,
+  ChipIcon,
+  CodeIcon,
+  GrowthIcon,
+  IoTIcon,
+  RocketIcon,
+  SpeedIcon,
+  TargetIcon,
+  TrophyIcon,
+} from './Icons.tsx'
+import SectionHeading from './SectionHeading.tsx'
+
+const JOURNEY_ICONS: Record<JourneyIcon, typeof IoTIcon> = {
+  iot: IoTIcon,
+  rocket: RocketIcon,
+  cart: CartIcon,
+  chip: ChipIcon,
+}
+
+// Mini cards: o ícone do selo do projeto (prêmio, métrica) ou, sem selo, código.
+const PROJECT_ICONS = {
+  trophy: TrophyIcon,
+  target: TargetIcon,
+  antenna: AntennaIcon,
+  growth: GrowthIcon,
+  speed: SpeedIcon,
+}
+
+// Projetos de cada jornada, com os que têm selo primeiro (mesma ordem da seção Projetos).
+const projectsOf = (slug: string): Project[] =>
+  projects.filter((p) => p.journey === slug).sort((a, b) => Number(!!b.badge) - Number(!!a.badge))
+
+// Linha horizontal de mini cards. Quando não cabem, a linha rola, e a borda do
+// lado que ainda tem itens escondidos esmaece para indicar que há mais.
+function ProjectRow({ children }: { children: ReactNode }) {
+  const row = useRef<HTMLUListElement>(null)
+  useEffect(() => {
+    const el = row.current
+    if (!el) return
+    const update = () => {
+      const max = el.scrollWidth - el.clientWidth
+      el.classList.toggle('fade-start', el.scrollLeft > 2)
+      el.classList.toggle('fade-end', el.scrollLeft < max - 2)
+    }
+    update()
+    el.addEventListener('scroll', update, { passive: true })
+    const ro = new ResizeObserver(update)
+    ro.observe(el)
+    return () => {
+      el.removeEventListener('scroll', update)
+      ro.disconnect()
+    }
+  }, [])
+  return <ul ref={row}>{children}</ul>
+}
 
 export default function ExperienceSection({ t, lang }: { t: UI; lang: Lang }) {
+  const list = useRef<HTMLOListElement>(null)
+
+  // Os cards entram deslizando do seu lado quando aparecem na tela (uma vez só).
+  // Sem IntersectionObserver, ou com animação reduzida, ficam visíveis direto.
+  useEffect(() => {
+    const el = list.current
+    if (!el || !('IntersectionObserver' in window)) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    el.classList.add('reveal')
+    const io = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((en) => {
+          if (en.isIntersecting) {
+            en.target.classList.add('is-visible')
+            io.unobserve(en.target)
+          }
+        }),
+      { rootMargin: '0px 0px -10% 0px' },
+    )
+    el.querySelectorAll('.journey-item').forEach((item) => io.observe(item))
+    return () => io.disconnect()
+  }, [])
+
   return (
     <section id="experience" className="section">
       <div className="container">
-        <h2 className="section-title">{t.experienceTitle}</h2>
+        <SectionHeading eyebrow={t.experienceEyebrow} title={t.experienceTitle} />
 
-        <ol className="timeline">
-          {experience.map((e) => (
-            <li key={e.org} className="timeline-item">
-              <div className="timeline-head">
-                <div>
-                  <h3 className="timeline-role">{e.role[lang]}</h3>
-                  <p className="timeline-org">{e.org}</p>
+        {/* Linha vertical no centro; os cards alternam entre esquerda e direita.
+            O card inteiro leva à subpágina; os mini cards, aos projetos. */}
+        <ol className="journey" ref={list}>
+          {experience.map((e, i) => {
+            const Icon = JOURNEY_ICONS[e.icon]
+            const related = projectsOf(e.slug)
+            return (
+              <li key={e.org.en} className={`journey-item ${i % 2 === 0 ? 'is-left' : 'is-right'}`}>
+                <span className="journey-node" aria-hidden="true">
+                  <Icon size={18} />
+                </span>
+                {/* O card é um contêiner: o link "ver a jornada" se estica sobre ele
+                    inteiro (::after), e os mini cards de projeto ficam por cima,
+                    como links próprios — links não podem ser aninhados. */}
+                <div className="card journey-card">
+                  <div className="journey-top">
+                    <span className="pill mono">{e.period[lang]}</span>
+                    <span className="mono muted small">{e.unit}</span>
+                  </div>
+                  {related.length > 0 && (
+                    <div className="journey-projects">
+                      <ProjectRow>
+                        {related.map((p) => {
+                          const PIcon = p.badge ? PROJECT_ICONS[p.badge.icon] : CodeIcon
+                          return (
+                            <li key={p.id}>
+                              <a
+                                className="journey-project"
+                                href={`#project-${p.id}`}
+                                aria-label={`${t.journeyProjectOpen}: ${p.title[lang]}`}
+                                title={p.title[lang]}
+                              >
+                                <PIcon size={15} />
+                                {p.short[lang]}
+                              </a>
+                            </li>
+                          )
+                        })}
+                      </ProjectRow>
+                    </div>
+                  )}
+                  <h3 className="journey-org">{e.org[lang]}</h3>
+                  <p className="journey-role">{e.role[lang]}</p>
+                  <ul className="journey-points">
+                    {e.points[lang].map((pt) => (
+                      <li key={pt}>{pt}</li>
+                    ))}
+                  </ul>
+                  <a
+                    className="project-link journey-more"
+                    href={`#/journey/${e.slug}`}
+                    aria-label={`${t.journeyMore}: ${e.org[lang]}`}
+                  >
+                    {t.journeyMore} <ArrowIcon />
+                  </a>
                 </div>
-                <span className="mono timeline-period">{e.period[lang]}</span>
-              </div>
-              <ul className="timeline-points">
-                {e.points[lang].map((pt) => (
-                  <li key={pt}>{pt}</li>
-                ))}
-              </ul>
-            </li>
-          ))}
+              </li>
+            )
+          })}
         </ol>
 
-        <div className="split">
-          <div className="card">
-            <h3 className="card-title">{t.educationTitle}</h3>
-            <p className="strong">{t.education.school}</p>
-            <p className="muted">{t.education.degree}</p>
-            <p className="mono muted small">{t.education.period}</p>
-          </div>
-          <div className="card">
-            <h3 className="card-title">{t.awardsTitle}</h3>
-            <ul className="awards">
-              {awards.map((a) => (
-                <li key={a.en}>{a[lang]}</li>
-              ))}
-            </ul>
-          </div>
+        <div className="card awards-card">
+          <h3 className="card-title">
+            <TrophyIcon size={18} /> {t.awardsTitle}
+          </h3>
+          <ul className="awards">
+            {awards.map((a) => (
+              <li key={a.en}>{a[lang]}</li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>

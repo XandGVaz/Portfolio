@@ -10,18 +10,27 @@ export interface Project {
   id: string
   title: Localized
   context: string
+  // Nome curto e jornada (slug em `experience`) para o mini card no card da jornada.
+  short: Localized
+  journey?: string
   period: string
   areas: Area[]
   stack: string[]
   summary: Localized
   highlights: Localized<string[]>
-  metric?: { value: string; label: Localized }
+  // Selo de destaque (prêmio, conquista). `icon` escolhe o ícone exibido.
+  badge?: { icon: 'trophy' | 'target' | 'antenna' | 'growth' | 'speed'; title: Localized; detail: Localized }
   repo?: string
 }
 
+export type JourneyIcon = 'iot' | 'rocket' | 'cart' | 'chip'
+
 export interface Experience {
+  slug: string // rota da subpágina: #/journey/<slug> (conteúdo em journey.ts)
   role: Localized
-  org: string
+  org: Localized
+  unit: string
+  icon: JourneyIcon
   period: Localized
   points: Localized<string[]>
 }
@@ -36,27 +45,67 @@ export const profile = {
 
 export const ui = {
   pt: {
-    nav: { projects: 'Projetos', experience: 'Experiência', skills: 'Tecnologias', contact: 'Contato' },
+    nav: { about: 'Sobre', projects: 'Projetos', experience: 'Jornada', skills: 'Tecnologias', contact: 'Contato' },
     role: 'Engenharia de Computação · USP São Carlos',
-    headline: 'Sistemas embarcados, IoT e back-end — do firmware à API.',
+    // Frase de destaque no card da foto, no topo da página.
+    tagline: 'Do Hardware à Nuvem',
+    // Texto alternativo do terminal animado no mesmo card.
+    pipelineAlt: 'Animação em estilo terminal: um sensor envia uma leitura de temperatura e umidade por rádio para a nuvem, que a passa por um broker de mensagens, a guarda num banco de dados e a entrega por HTTPS a um computador, que atualiza o painel.',
+    // Cada item fica em uma linha própria.
+    headline: ['Desenvolvimento Web, IoT e Sistemas\u00a0Embarcados'],
+    // Cada item vira um parágrafo no topo da página.
+    // Resumo curto; trechos entre **asteriscos** aparecem em destaque.
     summary:
-      'Construo APIs REST, serviços orientados a eventos, pipelines de dados em tempo real e firmware embarcado, com código em produção em uma loja on-line com pagamentos PIX, em plataformas de telemetria e IoT e em foguetes de competição.',
+      'Sou apaixonado por **IoT**, **aviônica** e **resolução de problemas**. Gosto de enxergar o sistema inteiro, do sensor no campo ao dado na tela, e de transformar desafios técnicos em soluções que funcionam de verdade.',
     ctaProjects: 'Ver projetos',
     ctaContact: 'Entrar em contato',
-    projectsTitle: 'Projetos em destaque',
+    downloadCv: 'Baixar CV',
+    cvMenuLabel: 'Escolha a área do currículo',
+    cvEnglishOnly: 'disponível em inglês',
+    projectsEyebrow: 'Portfólio',
+    projectsTitle: ['Projetos', 'em destaque'],
     projectsLead: 'Os projetos que mais aparecem nos meus currículos.',
     filters: { all: 'Todos', embedded: 'Embarcados', backend: 'Back-end & Dados', iot: 'IoT' },
     privateCode: 'Código privado',
     viewCode: 'Ver código',
-    experienceTitle: 'Experiência',
-    educationTitle: 'Formação',
-    education: {
-      school: 'Universidade de São Paulo (USP) — EESC e ICMC',
-      degree: 'Bacharelado em Engenharia de Computação',
-      period: '2023 – 2027 (previsão)',
-    },
+    aboutEyebrow: 'Formação & trajetória',
+    aboutTitle: ['Sobre', 'Mim'],
+    aboutFile: '~/sobre/vitor_vaz.md',
+    heroFile: '~/inicio/monitor.sh',
+    aboutGroups: 'Grupos de extensão',
+    aboutSeeJourney: 'Ver a jornada',
+    experienceEyebrow: 'Linha do tempo',
+    experienceTitle: ['Jornada', 'Profissional'],
+    journeyMore: 'Ver a jornada completa',
+    journeyProjectOpen: 'Ver projeto',
+    journeyBack: 'Voltar para a jornada',
+    journeyStack: 'Tecnologias',
+    statSeeCheckpoint: 'ver na linha do tempo',
+    statSeeFlight: 'ver no gráfico do voo',
+    flightTitle: 'O voo do Atlas',
+    flightLead: 'Altitude medida no voo da LASC 2026. Escolha uma fase, ou um dos números acima, para ver o trecho correspondente.',
+    flightStagesLabel: 'Fases do voo',
+    flightOurs: 'Altitude do Atlas',
+    flightRef: 'Altímetro comercial (referência no apogeu)',
+    flightSeeAtlas: 'Ver o Atlas na linha do tempo',
+    flightEvents: { liftoff: 'Decolagem', burnout: 'Fim da queima', apogee: 'Apogeu', apogeeRef: 'Altímetro comercial', drogue: 'Drogue', main: 'Principal', landing: 'Pouso' },
+    flightLocale: 'pt-BR',
+    checkpoint: 'Checkpoint',
+    photosPrev: 'Fotos anteriores',
+    photosNext: 'Próximas fotos',
+    photoOpen: 'Ampliar foto',
+    journeyPrev: 'Anterior',
+    journeyNext: 'Próxima',
+    journeyNotFound: 'Esta parte da jornada não existe.',
+    closeImage: 'Fechar imagem',
     awardsTitle: 'Prêmios',
-    skillsTitle: 'Tecnologias',
+    skillsEyebrow: 'Stack técnica',
+    skillsTitle: ['Tecnologias', 'e Ferramentas'],
+    skillsLead: 'Clique numa tecnologia para ver onde eu a usei.',
+    skillUsedIn: 'Onde usei',
+    skillProjects: 'Projetos',
+    skillJourney: 'Jornada',
+    skillClear: 'Fechar',
     contactTitle: 'Vamos conversar',
     contactLead: 'Aberto a estágios e projetos em embarcados, IoT e back-end.',
     themeToggle: 'Alternar tema',
@@ -64,27 +113,63 @@ export const ui = {
     footer: 'Feito com React + TypeScript · hospedado no GitHub Pages',
   },
   en: {
-    nav: { projects: 'Projects', experience: 'Experience', skills: 'Skills', contact: 'Contact' },
+    nav: { about: 'About', projects: 'Projects', experience: 'Journey', skills: 'Skills', contact: 'Contact' },
     role: 'Computer Engineering · University of São Paulo',
-    headline: 'Embedded systems, IoT and back-end — from firmware to API.',
+    // Frase de destaque no card da foto, no topo da página.
+    tagline: 'From Hardware to the Cloud',
+    pipelineAlt: 'Terminal-style animation: a sensor sends a temperature and humidity reading over radio to the cloud, which passes it through a message broker, stores it in a database and delivers it over HTTPS to a computer that updates its dashboard.',
+    headline: ['Web Development, IoT and Embedded\u00a0Systems'],
     summary:
-      'I build REST APIs, event-driven services, real-time data pipelines and embedded firmware, with code in production in an online store with PIX payments, in telemetry and IoT platforms, and in competition rockets.',
+      "I'm passionate about **IoT**, **avionics** and **problem solving**. I like to see the whole system, from the sensor in the field to the data on the screen, and to turn technical challenges into solutions that actually work.",
     ctaProjects: 'See projects',
     ctaContact: 'Get in touch',
-    projectsTitle: 'Featured projects',
+    downloadCv: 'Download resume',
+    cvMenuLabel: 'Choose the resume focus',
+    cvEnglishOnly: 'English only',
+    projectsEyebrow: 'Portfolio',
+    projectsTitle: ['Featured', 'Projects'],
     projectsLead: 'The projects that show up most across my resumes.',
     filters: { all: 'All', embedded: 'Embedded', backend: 'Back-end & Data', iot: 'IoT' },
     privateCode: 'Private code',
     viewCode: 'View code',
-    experienceTitle: 'Experience',
-    educationTitle: 'Education',
-    education: {
-      school: 'University of São Paulo (USP) — EESC and ICMC',
-      degree: "Bachelor's in Computer Engineering",
-      period: '2023 – 2027 (expected)',
-    },
+    aboutEyebrow: 'Education & background',
+    aboutTitle: ['About', 'Me'],
+    aboutFile: '~/about/vitor_vaz.md',
+    heroFile: '~/home/monitor.sh',
+    aboutGroups: 'Student teams',
+    aboutSeeJourney: 'See the journey',
+    experienceEyebrow: 'Career timeline',
+    experienceTitle: ['Professional', 'Journey'],
+    journeyMore: 'See the full story',
+    journeyProjectOpen: 'See project',
+    journeyBack: 'Back to the journey',
+    journeyStack: 'Stack',
+    statSeeCheckpoint: 'see it on the timeline',
+    statSeeFlight: 'see it on the flight chart',
+    flightTitle: 'The Atlas flight',
+    flightLead: 'Altitude measured during the LASC 2026 flight. Pick a phase, or one of the numbers above, to see that stretch.',
+    flightStagesLabel: 'Flight phases',
+    flightOurs: 'Atlas altitude',
+    flightRef: 'Commercial altimeter (apogee reference)',
+    flightSeeAtlas: 'See Atlas on the timeline',
+    flightEvents: { liftoff: 'Lift-off', burnout: 'Burnout', apogee: 'Apogee', apogeeRef: 'Commercial altimeter', drogue: 'Drogue', main: 'Main', landing: 'Landing' },
+    flightLocale: 'en-US',
+    checkpoint: 'Checkpoint',
+    photosPrev: 'Previous photos',
+    photosNext: 'Next photos',
+    photoOpen: 'Enlarge photo',
+    journeyPrev: 'Previous',
+    journeyNext: 'Next',
+    journeyNotFound: 'This part of the journey does not exist.',
+    closeImage: 'Close image',
     awardsTitle: 'Awards',
-    skillsTitle: 'Skills',
+    skillsEyebrow: 'Tech stack',
+    skillsTitle: ['Skills', '& Tools'],
+    skillsLead: 'Click a technology to see where I used it.',
+    skillUsedIn: 'Where I used',
+    skillProjects: 'Projects',
+    skillJourney: 'Journey',
+    skillClear: 'Close',
     contactTitle: "Let's talk",
     contactLead: 'Open to internships and projects in embedded, IoT and back-end.',
     themeToggle: 'Toggle theme',
@@ -104,9 +189,11 @@ export const projects: Project[] = [
       en: 'IoT Monitoring Platform for Coffee Farming',
     },
     context: 'LaSDPC — ICMC-USP',
+    short: { pt: 'Monitoramento IoT', en: 'IoT Monitoring' },
+    journey: 'lasdpc',
     period: '06/2026 – 09/2026',
     areas: ['backend', 'iot'],
-    stack: ['Java 21', 'Spring Boot', 'Kafka', 'PostgreSQL', 'TimescaleDB', 'MQTT', 'Docker', 'Prometheus'],
+    stack: ['Java 21', 'Spring Boot', 'Swagger', 'Kafka', 'PostgreSQL', 'TimescaleDB', 'MQTT', 'JavaScript', 'Docker', 'Docker Compose', 'Prometheus'],
     summary: {
       pt: 'Plataforma que ingere, processa e armazena em tempo real os dados de sensores LoRaWAN no campo.',
       en: 'Platform that ingests, processes and stores LoRaWAN field-sensor data in real time.',
@@ -128,6 +215,8 @@ export const projects: Project[] = [
     id: 'ground-station',
     title: { pt: 'Flex Ground Station', en: 'Flex Ground Station' },
     context: 'TOPUS — EESC-USP',
+    short: { pt: 'Flex Ground Station', en: 'Flex Ground Station' },
+    journey: 'topus',
     period: '05/2026 – 09/2026',
     areas: ['embedded'],
     stack: ['ESP32', 'C++', 'FreeRTOS', 'LoRa', 'KiCad', 'I2C/SPI'],
@@ -147,15 +236,24 @@ export const projects: Project[] = [
         'Field-tunable radio (RSSI/SNR) and a JSON-over-serial protocol to the visual interface',
       ],
     },
-    metric: { value: '2 km', label: { pt: 'de alcance de telemetria em voo', en: 'in-flight telemetry range' } },
+    badge: {
+      icon: 'antenna',
+      title: { pt: '2 km de alcance de telemetria', en: '2 km telemetry range' },
+      detail: {
+        pt: 'link mantido com o foguete em voo, em tempo real',
+        en: 'link held with the rocket in flight, in real time',
+      },
+    },
   },
   {
     id: 'telemetry-dashboard',
     title: { pt: 'Painel de Telemetria em Tempo Real', en: 'Real-Time Telemetry Dashboard' },
     context: 'TOPUS — EESC-USP',
+    short: { pt: 'Painel de Telemetria', en: 'Telemetry Dashboard' },
+    journey: 'topus',
     period: '09/2025 – 08/2026',
     areas: ['backend', 'embedded'],
-    stack: ['FastAPI', 'WebSocket', 'React', 'TypeScript', 'Recharts', 'three.js', 'Docker Compose'],
+    stack: ['Python', 'FastAPI', 'WebSocket', 'React', 'TypeScript', 'HTML', 'CSS', 'Docker Compose'],
     summary: {
       pt: 'Interface web que acompanha o voo do foguete ao vivo, alimentada pela estação de solo.',
       en: "Web interface that follows the rocket's flight live, fed by the ground station.",
@@ -172,11 +270,18 @@ export const projects: Project[] = [
         'CSV recording and a packet schema tolerant to optional fields',
       ],
     },
+    badge: {
+      icon: 'trophy',
+      title: { pt: '2º lugar — categoria CubeSat', en: '2nd place — CubeSat category' },
+      detail: { pt: 'Latin American Space Challenge 2026', en: 'Latin American Space Challenge 2026' },
+    },
   },
   {
     id: 'saecomp-store',
-    title: { pt: 'API da Loja SAEComp', en: 'SAEComp Store API' },
+    title: { pt: 'Back-End da Loja SAEComp', en: 'SAEComp Store Back-End' },
     context: 'SAEComp — USP',
+    short: { pt: 'Back-End da Loja', en: 'Store Back-End' },
+    journey: 'saecomp',
     period: '08/2025 – 02/2026',
     areas: ['backend'],
     stack: ['Node.js', 'TypeScript', 'Express', 'PostgreSQL', 'Zod', 'Swagger'],
@@ -196,16 +301,25 @@ export const projects: Project[] = [
         'OpenAPI docs generated from the Zod schemas',
       ],
     },
-    metric: { value: '75×', label: { pt: 'no lucro da secretaria', en: "growth in the office's profit" } },
+    badge: {
+      icon: 'growth',
+      title: { pt: '75× no lucro da secretaria', en: "75× growth in the office's profit" },
+      detail: {
+        pt: 'loja on-line em produção com pagamentos PIX',
+        en: 'online store in production with PIX payments',
+      },
+    },
     repo: 'https://github.com/SAEComp/site-saecomp-back-lojinha',
   },
   {
     id: 'lpwan-bridge',
     title: { pt: 'Bridge LPWAN ↔ Aplicação', en: 'LPWAN ↔ Application Bridge' },
     context: 'LaSDPC — ICMC-USP',
+    short: { pt: 'Bridge LPWAN', en: 'LPWAN Bridge' },
+    journey: 'lasdpc',
     period: '05/2026 – 09/2026',
     areas: ['backend', 'iot'],
-    stack: ['Python', 'MQTT', 'Pydantic', 'Redis', 'Prometheus'],
+    stack: ['Python', 'MQTT', 'Pydantic', 'Redis', 'Prometheus', 'Docker Compose'],
     summary: {
       pt: 'Resolve a incompatibilidade entre as identidades de dispositivo do Network Server e as da aplicação.',
       en: "Resolves the mismatch between the Network Server's and the application's device identities.",
@@ -227,9 +341,11 @@ export const projects: Project[] = [
     id: 'atlas',
     title: { pt: 'Computador de Voo — Foguete Atlas 3 km', en: 'Flight Computer — Atlas 3 km Rocket' },
     context: 'TOPUS — EESC-USP',
+    short: { pt: 'Computador de Voo', en: 'Flight Computer' },
+    journey: 'topus',
     period: '03/2026 – 09/2026',
     areas: ['embedded'],
-    stack: ['ESP32', 'C++', 'FreeRTOS', 'KiCad', 'Kalman', 'Madgwick', 'LoRa', 'GNSS'],
+    stack: ['ESP32', 'C++', 'FreeRTOS', 'CMake', 'KiCad', 'Kalman', 'Madgwick', 'LoRa', 'GNSS'],
     summary: {
       pt: 'Aviônica do foguete Atlas, lançado na Latin American Space Challenge 2026.',
       en: 'Avionics for the Atlas rocket, launched at the Latin American Space Challenge 2026.',
@@ -246,12 +362,20 @@ export const projects: Project[] = [
         'Kalman (altitude/velocity) and Madgwick (attitude) filters running concurrently',
       ],
     },
-    metric: { value: '0,11%', label: { pt: 'de erro no apogeu vs. altímetro certificado', en: 'apogee error vs. certified altimeter' } },
+    badge: {
+      icon: 'target',
+      title: { pt: '99,89% de exatidão no apogeu', en: '99.89% apogee accuracy' },
+      detail: {
+        pt: 'vs. altímetro certificado — voo de 3 km na LASC 2026',
+        en: 'vs. certified altimeter — 3 km flight at LASC 2026',
+      },
+    },
   },
   {
     id: 'parallel-stats',
     title: { pt: 'Pipeline Estatístico Paralelo', en: 'Parallel Statistics Pipeline' },
     context: 'ICMC-USP',
+    short: { pt: 'Pipeline Paralelo', en: 'Parallel Pipeline' },
     period: '03/2026 – 04/2026',
     areas: ['backend'],
     stack: ['C', 'OpenMP', 'Linux', 'CMake'],
@@ -269,14 +393,24 @@ export const projects: Project[] = [
         'Parallelization granularity tuned per stage, skipping threads on fine-grained loops',
       ],
     },
-    metric: { value: '2,9×', label: { pt: 'de speedup sobre o sequencial', en: 'speedup over sequential' } },
+    badge: {
+      icon: 'speed',
+      title: { pt: '2,9× de speedup sobre o sequencial', en: '2.9× speedup over sequential' },
+      detail: {
+        pt: '3 bilhões de notas processadas com OpenMP',
+        en: 'three billion grades processed with OpenMP',
+      },
+    },
   },
 ]
 
 export const experience: Experience[] = [
   {
     role: { pt: 'Iniciação Científica', en: 'Undergraduate Research' },
-    org: 'LaSDPC — ICMC-USP',
+    slug: 'lasdpc',
+    org: { pt: 'LaSDPC', en: 'LaSDPC' },
+    unit: 'ICMC-USP',
+    icon: 'iot',
     period: { pt: '04/2025 – Atual', en: '04/2025 – Present' },
     points: {
       pt: [
@@ -293,7 +427,10 @@ export const experience: Experience[] = [
   },
   {
     role: { pt: 'Coordenador de Aviônica', en: 'Avionics Coordinator' },
-    org: 'TOPUS Projetos Aeroespaciais — EESC-USP',
+    slug: 'topus',
+    org: { pt: 'TOPUS Projetos Aeroespaciais', en: 'TOPUS Aerospace Projects' },
+    unit: 'EESC-USP',
+    icon: 'rocket',
     period: { pt: '05/2025 – 09/2026', en: '05/2025 – 09/2026' },
     points: {
       pt: [
@@ -308,7 +445,10 @@ export const experience: Experience[] = [
   },
   {
     role: { pt: 'Gerente de Projeto', en: 'Project Manager' },
-    org: 'SAEComp — USP',
+    slug: 'saecomp',
+    org: { pt: 'SAEComp', en: 'SAEComp' },
+    unit: 'USP',
+    icon: 'cart',
     period: { pt: '05/2025 – 03/2026', en: '05/2025 – 03/2026' },
     points: {
       pt: [
@@ -323,7 +463,10 @@ export const experience: Experience[] = [
   },
   {
     role: { pt: 'Diretor do Departamento de Embarcados', en: 'Embedded Systems Department Director' },
-    org: 'Zenith Aerospace — EESC-USP',
+    slug: 'zenith',
+    org: { pt: 'Zenith Aerospace', en: 'Zenith Aerospace' },
+    unit: 'EESC-USP',
+    icon: 'chip',
     period: { pt: '03/2024 – 06/2025', en: '03/2024 – 06/2025' },
     points: {
       pt: [
@@ -338,6 +481,102 @@ export const experience: Experience[] = [
   },
 ]
 
+// Seção "Sobre o Vitor".
+export const about = {
+  title: {
+    pt: 'Engenheiro de Computação em Formação',
+    en: 'Computer Engineer in Training',
+  },
+  paragraphs: {
+    pt: [
+      'Moro em São Carlos (SP) e curso Engenharia de Computação na USP, um curso compartilhado entre a Escola de Engenharia de São Carlos (EESC) e o Instituto de Ciências Matemáticas e de Computação (ICMC). Desde 2024 participo de grupos de extensão: dirigi o departamento de embarcados da Zenith Aerospace, coordenei a aviônica da TOPUS e gerenciei o projeto da loja on-line da SAEComp.',
+      'Na iniciação científica no LaSDPC, trabalho com redes LPWAN aplicadas à cafeicultura, do firmware e da PCB do nó sensor ao testbed de campo e à plataforma de dados que recebe as leituras. Também sou coautor de um artigo premiado com Best Paper no IEEE SmartIoT 2026.',
+      'No dia a dia, uso agentes de IA como ferramenta de trabalho, do diagnóstico de falhas à documentação, sempre revisando e integrando o que eles produzem.',
+    ],
+    en: [
+      "I live in São Carlos, Brazil, and study Computer Engineering at the University of São Paulo, a program shared between the São Carlos School of Engineering (EESC) and the Institute of Mathematical and Computer Sciences (ICMC). Since 2024 I've been part of student engineering teams: I directed Zenith Aerospace's embedded department, coordinated TOPUS's avionics and managed SAEComp's online store project.",
+      "In my undergraduate research at LaSDPC, I work on LPWAN networks for coffee farming, from the sensor node's firmware and PCB to the field testbed and the data platform that receives its readings. I'm also a co-author of a paper that won the Best Paper Award at IEEE SmartIoT 2026.",
+      'Day to day, I use AI agents as a working tool, from fault diagnosis to documentation, always reviewing and integrating what they produce.',
+    ],
+  } satisfies Localized<string[]>,
+  // Mini cards da barra do card (com GIF). Clicar abre `detail` logo abaixo da barra.
+  // O último (`highlight`) é o selo de pesquisador, com destaque azul.
+  minis: [
+    {
+      icon: 'rocket',
+      label: { pt: 'Aviônica', en: 'Avionics' },
+      detail: {
+        pt: 'Coordenei a aviônica do Atlas, foguete de 3 km lançado na LASC 2026: computador de voo em pilha de PCBs próprias, FreeRTOS nos dois núcleos do ESP32, filtros de Kalman e Madgwick e 99,89% de exatidão no apogeu.',
+        en: 'I coordinated the avionics of Atlas, a 3 km rocket launched at LASC 2026: a flight computer on a stack of custom PCBs, FreeRTOS on both ESP32 cores, Kalman and Madgwick filters and 99.89% apogee accuracy.',
+      },
+    },
+    {
+      icon: 'firmware',
+      label: { pt: 'Firmware', en: 'Firmware' },
+      detail: {
+        pt: 'Firmware em C/C++ com FreeRTOS para ESP32 e STM32: computadores de voo, estações de solo, nós LoRaWAN de baixo consumo e bibliotecas de LoRa, EEPROM e filtro de Kalman usadas por toda a TOPUS.',
+        en: 'C/C++ firmware with FreeRTOS for ESP32 and STM32: flight computers, ground stations, low-power LoRaWAN nodes, and LoRa, EEPROM and Kalman filter libraries used across TOPUS.',
+      },
+    },
+    {
+      icon: 'chip',
+      label: { pt: 'Hardware & PCBs', en: 'Hardware & PCBs' },
+      detail: {
+        pt: 'Projeto de PCBs no KiCad: a pilha modular do computador de voo do Atlas, a estação de solo portátil e o nó sensor LoRaWAN da pesquisa, numa caixa à prova de intempéries.',
+        en: "PCB design in KiCad: the Atlas flight computer's modular stack, the portable ground station and the research's LoRaWAN sensor node, in a weatherproof enclosure.",
+      },
+    },
+    {
+      icon: 'web',
+      label: { pt: 'Web', en: 'Web' },
+      detail: {
+        pt: 'APIs e interfaces web: o back-end da loja SAEComp em Node.js/TypeScript com PIX, a plataforma IoT em Spring Boot e o painel de telemetria em React e FastAPI.',
+        en: "APIs and web interfaces: the SAEComp store's Node.js/TypeScript back end with PIX, the Spring Boot IoT platform and the React and FastAPI telemetry dashboard.",
+      },
+    },
+    {
+      icon: 'iot',
+      label: { pt: 'Pesquisador de IoT', en: 'IoT Researcher' },
+      highlight: true,
+      detail: {
+        pt: 'Iniciação científica com bolsa FAPESP no LaSDPC (ICMC-USP), comparando protocolos LPWAN para a cafeicultura de precisão. Coautor de um artigo premiado com Best Paper no IEEE SmartIoT 2026.',
+        en: 'FAPESP-funded undergraduate research at LaSDPC (ICMC-USP), comparing LPWAN protocols for precision coffee farming. Co-author of a paper that won the Best Paper Award at IEEE SmartIoT 2026.',
+      },
+    },
+  ] as {
+    icon: 'rocket' | 'firmware' | 'chip' | 'web' | 'sparkles' | 'iot'
+    label: Localized
+    detail: Localized
+    highlight?: true
+  }[],
+  background: [
+    {
+      period: { pt: '2023 – 2027', en: '2023 – 2027' },
+      place: 'São Carlos, SP',
+      title: { pt: 'Universidade de São Paulo (USP)', en: 'University of São Paulo (USP)' },
+      subtitle: { pt: 'Bacharelado em Engenharia de Computação', en: "Bachelor's in Computer Engineering" },
+      note: { pt: 'EESC e ICMC · conclusão prevista para 2027', en: 'EESC and ICMC · expected graduation in 2027' },
+      groups: ['zenith', 'topus', 'saecomp'], // grupos de extensão (slugs da jornada)
+    },
+    {
+      period: { pt: '2025 – atual', en: '2025 – present' },
+      place: 'ICMC-USP',
+      title: { pt: 'LaSDPC', en: 'LaSDPC' },
+      subtitle: { pt: 'Iniciação Científica', en: 'Undergraduate Research' },
+      note: { pt: 'Redes LPWAN e IoT aplicadas à cafeicultura', en: 'LPWAN networks and IoT for coffee farming' },
+      href: '#/journey/lasdpc',
+    },
+  ] as {
+    period: Localized
+    place: string
+    title: Localized
+    subtitle: Localized
+    note: Localized
+    href?: string
+    groups?: string[]
+  }[],
+}
+
 export const awards: Localized<string>[] = [
   {
     pt: 'Best Paper Award — IEEE SmartIoT 2026, coautor de um trabalho sobre testbed IoT reprodutível e observável',
@@ -349,19 +588,50 @@ export const awards: Localized<string>[] = [
   },
 ]
 
-export const skills: { group: Localized; items: string[] }[] = [
-  { group: { pt: 'Linguagens', en: 'Languages' }, items: ['C', 'C++', 'Python', 'TypeScript', 'JavaScript', 'Java', 'SQL'] },
+export type SkillIcon = 'code' | 'iot' | 'data' | 'front' | 'tools'
+
+export const skills: { icon: SkillIcon; group: Localized; items: string[] }[] = [
+  { icon: 'code', group: { pt: 'Linguagens', en: 'Languages' }, items: ['C', 'C++', 'Python', 'TypeScript', 'JavaScript', 'Java', 'SQL'] },
   {
+    icon: 'iot',
     group: { pt: 'Embarcados & IoT', en: 'Embedded & IoT' },
     items: ['ESP32', 'STM32', 'Raspberry Pi', 'FreeRTOS', 'PlatformIO', 'KiCad', 'LoRa / LoRaWAN', 'MQTT', 'OpenMP'],
   },
   {
+    icon: 'data',
     group: { pt: 'Back-end & Dados', en: 'Back-end & Data' },
     items: ['Node.js', 'Express', 'Spring Boot', 'FastAPI', 'PostgreSQL', 'TimescaleDB', 'Redis', 'Apache Kafka'],
   },
-  { group: { pt: 'Front-end', en: 'Front-end' }, items: ['React', 'Vite', 'Recharts', 'three.js'] },
+  { icon: 'front', group: { pt: 'Front-end', en: 'Front-end' }, items: ['React', 'HTML', 'CSS'] },
   {
+    icon: 'tools',
     group: { pt: 'DevOps & Ferramentas', en: 'DevOps & Tools' },
     items: ['Docker', 'Docker Compose', 'Prometheus', 'Git', 'Linux', 'CMake', 'Swagger'],
+  },
+]
+
+// Currículos para download. Os PDFs ficam em public/cv/.
+// Se não houver versão em português (`pt`), o site oferece a versão em inglês.
+export interface Resume {
+  id: string
+  label: Localized
+  files: { pt?: string; en: string }
+}
+
+export const resumes: Resume[] = [
+  {
+    id: 'development',
+    label: { pt: 'Desenvolvimento', en: 'Software Development' },
+    files: { pt: 'cv/vitor-vaz-cv-desenvolvimento.pdf', en: 'cv/vitor-vaz-resume-development.pdf' },
+  },
+  {
+    id: 'systems',
+    label: { pt: 'Engenharia de Sistemas', en: 'Systems Engineering' },
+    files: { pt: 'cv/vitor-vaz-cv-engenharia-de-sistemas.pdf', en: 'cv/vitor-vaz-resume-systems-engineer.pdf' },
+  },
+  {
+    id: 'embedded',
+    label: { pt: 'Sistemas Embarcados', en: 'Embedded Systems' },
+    files: { pt: 'cv/vitor-vaz-cv-embarcados.pdf', en: 'cv/vitor-vaz-resume-embedded.pdf' },
   },
 ]
