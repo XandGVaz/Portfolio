@@ -7,9 +7,11 @@ import {
   ArrowIcon,
   BalloonIcon,
   BoltIcon,
+  CartIcon,
   ChipIcon,
   GraduationIcon,
   GrowthIcon,
+  IoTIcon,
   MoneyIcon,
   RocketIcon,
   StockIcon,
@@ -41,6 +43,14 @@ const HERO_GIFS: Record<JourneyIcon, { gif: string; still: string }> = {
   chip: { gif: chipGif, still: chipPng },
 }
 
+// Ícone de cada jornada nos botões "Anterior"/"Próxima" (os mesmos da linha do tempo).
+const JOURNEY_ICONS: Record<JourneyIcon, typeof RocketIcon> = {
+  iot: IoTIcon,
+  rocket: RocketIcon,
+  cart: CartIcon,
+  chip: ChipIcon,
+}
+
 const STAT_ICONS: Record<StatIcon, typeof RocketIcon> = {
   antenna: AntennaIcon,
   graduation: GraduationIcon,
@@ -55,6 +65,15 @@ const STAT_ICONS: Record<StatIcon, typeof RocketIcon> = {
   stock: StockIcon,
   chip: ChipIcon,
   balloon: BalloonIcon,
+}
+
+function PagerIcon({ icon }: { icon: JourneyIcon }) {
+  const Icon = JOURNEY_ICONS[icon]
+  return (
+    <span className="pager-icon" aria-hidden="true">
+      <Icon size={20} />
+    </span>
+  )
 }
 
 export default function JourneyPage({ slug, t, lang }: { slug: string; t: UI; lang: Lang }) {
@@ -221,16 +240,22 @@ export default function JourneyPage({ slug, t, lang }: { slug: string; t: UI; la
         <nav className="journey-pager" aria-label={t.journeyBack}>
           {prev ? (
             <a href={`#/journey/${prev.slug}`} className="card pager-link">
-              <span className="muted small">← {t.journeyPrev}</span>
-              <strong>{prev.org[lang]}</strong>
+              <PagerIcon icon={prev.icon} />
+              <span className="pager-text">
+                <span className="muted small">← {t.journeyPrev}</span>
+                <strong>{prev.org[lang]}</strong>
+              </span>
             </a>
           ) : (
             <span />
           )}
           {next ? (
             <a href={`#/journey/${next.slug}`} className="card pager-link is-next">
-              <span className="muted small">{t.journeyNext} →</span>
-              <strong>{next.org[lang]}</strong>
+              <span className="pager-text">
+                <span className="muted small">{t.journeyNext} →</span>
+                <strong>{next.org[lang]}</strong>
+              </span>
+              <PagerIcon icon={next.icon} />
             </a>
           ) : (
             <span />

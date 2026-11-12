@@ -324,7 +324,7 @@ export const journeyDetails: Record<string, JourneyDetail> = {
             w: 1140,
             h: 594,
             tag: { pt: 'Software', en: 'Software' },
-            fit: 'screen',
+            fit: 'contain',
             title: { pt: 'Interface da estação durante o voo', en: 'Ground station interface during the flight' },
             caption: {
               pt: 'Painel de telemetria em tempo real (React/TypeScript e FastAPI): fase do voo, estado da recuperação, altitude e velocidade filtradas e a atitude do foguete em 3D.',
@@ -370,8 +370,7 @@ export const journeyDetails: Record<string, JourneyDetail> = {
             w: 1800,
             h: 960,
             tag: { pt: 'Dados de voo · Rigel IV', en: 'Flight data · Rigel IV' },
-            fit: 'diagram',
-            featured: true,
+            fit: 'contain',
             title: { pt: 'Altitude antes e depois do filtro', en: 'Altitude before and after the filter' },
             caption: {
               pt: 'Primeiros 12 s da subida do Rigel IV: a altitude do barômetro (laranja) é atualizada em degraus; o filtro de Kalman (azul), alimentado também pela aceleração da IMU, produz uma estimativa contínua.',
@@ -383,8 +382,7 @@ export const journeyDetails: Record<string, JourneyDetail> = {
             w: 1800,
             h: 960,
             tag: { pt: 'Dados de voo · Rigel IV', en: 'Flight data · Rigel IV' },
-            fit: 'diagram',
-            featured: true,
+            fit: 'contain',
             title: { pt: 'Velocidade antes e depois do filtro', en: 'Velocity before and after the filter' },
             caption: {
               pt: 'Voo inteiro do Rigel IV: a velocidade derivada do barômetro (laranja) tem picos de ruído de até 1.111 m/s; a velocidade estimada pelo filtro de Kalman (azul) chega a 242 m/s e fica estável na descida.',
@@ -488,8 +486,7 @@ export const journeyDetails: Record<string, JourneyDetail> = {
             w: 1946,
             h: 800,
             tag: { pt: 'Firmware · FreeRTOS', en: 'Firmware · FreeRTOS' },
-            fit: 'diagram',
-            featured: true,
+            fit: 'contain',
             title: { pt: 'Arquitetura de firmware do Atlas', en: 'Atlas firmware architecture' },
             caption: {
               pt: 'Fluxo de dados: sensores → tasks de leitura → objetos globais (estado do voo) → saídas. A task da IMU publica a aceleração vertical usada pelo filtro de Kalman; a máquina de estados lê o filtro, decide a fase do voo e grava em CurrentState. As regiões tracejadas agrupam as tasks pelo núcleo do ESP32 em que rodam.',
@@ -593,7 +590,7 @@ export const journeyDetails: Record<string, JourneyDetail> = {
             w: 1280,
             h: 522,
             tag: { pt: 'Front-end', en: 'Front-end' },
-            fit: 'screen',
+            fit: 'contain',
             title: { pt: 'Catálogo da loja SAEComp', en: 'SAEComp store catalog' },
             caption: {
               pt: 'A página inicial da loja, com produtos por categoria, preços e carrinho. O back-end que desenvolvi fornece os produtos, os preços e o estoque, além dos pagamentos PIX, da pontuação e da área de administração.',
