@@ -63,8 +63,6 @@ function ProjectCard({ p, t, lang, flash }: { p: Project; t: UI; lang: Lang; fla
   )
 }
 
-// Projetos com selo (métrica/prêmio) primeiro; o sort é estável, então
-// dentro de cada grupo vale a ordem definida em content.ts.
 const ordered = [...projects].sort((a, b) => Number(!!b.badge) - Number(!!a.badge))
 
 export default function Projects({ t, lang }: { t: UI; lang: Lang }) {
@@ -72,13 +70,9 @@ export default function Projects({ t, lang }: { t: UI; lang: Lang }) {
 
   const [flash, setFlash] = useState<string | null>(null)
 
-  // Um link para um projeto (#project-<id>, ex.: vindo de Tecnologias) mostra
-  // todos os projetos, para o card de destino não estar escondido pelo filtro,
-  // e faz o card piscar em destaque.
   useEffect(() => {
     let timer = 0
     const onHash = () => {
-      // #projects/<filtro> (ex.: #projects/iot): abre a seção já filtrada
       const f = window.location.hash.match(/^#projects\/(all|embedded|backend|iot)$/)
       if (f) {
         setFilter(f[1] as Filter)

@@ -1,14 +1,10 @@
 import { useEffect, useState } from 'react'
 
-// Roteamento por hash, que funciona no GitHub Pages sem servidor:
-//   #/journey/<slug>  → subpágina da jornada
-//   qualquer outro    → página inicial (#about, #projects… continuam sendo âncoras;
-//                       em "#projects/iot", a âncora é "projects" e "iot" é um filtro)
-export type Route = { page: 'home'; anchor: string | null } | { page: 'journey'; slug: string }
+export type Route = { page: 'home'; anchor: string | null } | { page: 'journey'; slug: string; section: string | null }
 
 function parse(hash: string): Route {
-  const m = hash.match(/^#\/journey\/([\w-]+)\/?$/)
-  if (m) return { page: 'journey', slug: m[1] }
+  const m = hash.match(/^#\/journey\/([\w-]+)(?:\/([\w-]+))?\/?$/)
+  if (m) return { page: 'journey', slug: m[1], section: m[2] ?? null }
   return { page: 'home', anchor: hash.length > 1 && !hash.startsWith('#/') ? hash.slice(1).split('/')[0] : null }
 }
 
@@ -21,8 +17,6 @@ export function useHashRoute(): Route {
     return () => window.removeEventListener('hashchange', onChange)
   }, [])
 
-  // Depois de trocar de página: subpágina abre no topo; na inicial, rola até a âncora.
-  // A rolagem espera um quadro para o React terminar de montar a página.
   useEffect(() => {
     const id = requestAnimationFrame(() => {
       if (route.page === 'journey') window.scrollTo({ top: 0, behavior: 'instant' })

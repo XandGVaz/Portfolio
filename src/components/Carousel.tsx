@@ -3,9 +3,6 @@ import type { Lang } from '../content.ts'
 import type { JourneyImage } from '../journey.ts'
 import Lightbox from './Lightbox.tsx'
 
-// Carrossel horizontal de fotos, paginado por setas (e arrastável no celular).
-// Os cards têm tamanho fixo; clicar em um abre a imagem inteira no Lightbox.
-
 const ExpandIcon = () => (
   <span className="photo-expand" aria-hidden="true">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -27,20 +24,13 @@ export default function Carousel({ images, lang, labels }: Props) {
   const close = useCallback(() => setOpen(null), [])
   const base = import.meta.env.BASE_URL
 
-  // Uma "página" é a largura visível mais um espaço entre cards: com N colunas
-  // de largura W e espaço G, a faixa mede N·W + (N−1)·G, e a área visível,
-  // P·W + (P−1)·G. Somando G aos dois lados, a razão vira exatamente N/P.
   const pageStep = (el: HTMLElement) => el.clientWidth + (parseFloat(getComputedStyle(el).columnGap) || 0)
 
-  // Recalcula página atual e total a partir da rolagem e da largura visível.
   const measure = useCallback(() => {
     const el = track.current
     if (!el) return
     const step = pageStep(el)
     const gap = step - el.clientWidth
-    // Arredonda para cima: com um card largo (2 colunas) a faixa pode ter, por
-    // exemplo, 4 colunas para 3 visíveis, o que ainda exige uma segunda página.
-    // A folga de 2% evita contar uma página extra por diferença de subpixel.
     const total = Math.max(1, Math.ceil((el.scrollWidth + gap) / step - 0.02))
     setPages(total)
     const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 4

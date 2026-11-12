@@ -1,36 +1,24 @@
-// Conteúdo das subpáginas da jornada (#/journey/<slug>).
-// Cada seção pode ter suas imagens, mostradas num carrossel logo abaixo do texto.
-// As imagens ficam em public/journey/<slug>/. `w` e `h` são as dimensões
-// reais do arquivo e servem para reservar o espaço antes de a imagem carregar.
-
 import type { Localized } from './content.ts'
 
 export interface JourneyImage {
   src: string
   w: number
   h: number
-  tag: Localized // etiqueta pequena sobre o card (ex.: "Dados de voo")
+  tag: Localized
   title: Localized
   caption: Localized
-  // Fotos preenchem o card (padrão), centradas em `pos` (object-position).
-  // 'contain': gráficos e renders aparecem inteiros, sobre fundo branco.
-  // 'screen': prints de tela ganham um card largo, com moldura de janela,
-  //           na proporção original e com o título abaixo da imagem.
-  // 'diagram': diagramas ganham o mesmo card largo, sem a moldura de janela,
-  //            inteiros sobre fundo branco e com altura limitada.
   fit?: 'contain' | 'screen' | 'diagram'
-  featured?: true // card maior: ocupa a largura inteira do carrossel
+  featured?: true
   pos?: string
 }
 
 export interface JourneySection {
   title: Localized
-  period?: Localized // período da etapa, mostrado acima do título na linha do tempo
+  period?: Localized
   body: Localized
   images?: JourneyImage[]
-  // false: não é uma etapa no tempo (ex.: bibliotecas compartilhadas). A seção
-  // sai da linha do tempo de checkpoints e aparece num card abaixo dela.
   timeline?: false
+  anchor?: string
 }
 
 export type StatIcon =
@@ -48,31 +36,29 @@ export type StatIcon =
   | 'chip'
   | 'balloon'
 
-// Fases do voo do Atlas no gráfico da página da TOPUS ('flight' = voo inteiro).
 export type FlightStage = 'flight' | 'boost' | 'coast' | 'apogee' | 'drogue' | 'main'
+
+export type ArchPart = 'overview' | 'nodes' | 'network' | 'bridge' | 'app' | 'ui' | 'monitoring'
 
 export interface JourneyStat {
   value: string | Localized
   label: Localized
-  icon: StatIcon // o ícone azul à direita do card (ver STAT_ICONS em JourneyPage)
-  // Card interativo: `flight` seleciona essa fase no gráfico de voo (só em páginas
-  // com `flightChart`); senão, `section` (o título em inglês de uma seção da linha
-  // do tempo) rola até aquele checkpoint. Sem nenhum dos dois, o card é estático.
+  icon: StatIcon
   flight?: FlightStage
+  part?: ArchPart
   section?: string
 }
 
 export interface JourneyDetail {
   intro: Localized
   stats: JourneyStat[]
-  flightChart?: true // gráfico do voo do Atlas logo abaixo dos cards
+  flightChart?: true
+  architecture?: true
   sections: JourneySection[]
   stack: string[]
   link?: { href: string; label: Localized }
 }
 
-// Texto de cada fase no painel abaixo do gráfico de voo (dados em flightData.ts,
-// gerados por scripts/atlas-flight.py; os números vêm do relatório de voo do Atlas).
 export const flightStages: Record<FlightStage, { title: Localized; body: Localized }> = {
   flight: {
     title: { pt: 'Voo inteiro', en: 'Whole flight' },
@@ -118,6 +104,63 @@ export const flightStages: Record<FlightStage, { title: Localized; body: Localiz
   },
 }
 
+export const archParts: Record<ArchPart, { title: Localized; tech?: string; body: Localized }> = {
+  overview: {
+    title: { pt: 'Visão geral', en: 'Overview' },
+    body: {
+      pt: 'Cada nó envia suas leituras pelo seu protocolo. Os network servers as recebem e as passam por MQTT à bridge, que as padroniza e entrega por TCP ao servidor de aplicação; ele as guarda, e a interface as consulta por HTTP. Escolha uma camada para ver como ela funciona.',
+      en: 'Each sensor device sends its readings over its own protocol. The network servers receive them and pass them over MQTT to the bridge, which normalizes them and delivers them over TCP to the application server; it stores them, and the interface queries them over HTTP. Pick a layer to see how it works.',
+    },
+  },
+  nodes: {
+    title: { pt: 'Nós sensores', en: 'Sensor devices' },
+    body: {
+      pt: 'Cada protocolo comparado (mioty, LoRaWAN, NB-IoT e Sigfox) tem seus nós em campo. Nos de LoRaWAN e NB-IoT, com PCB que projetei, um ESP32 lê temperatura e umidade (DHT22), luz (LDR) e o consumo de energia (INA226), e o firmware em C++ com FreeRTOS separa leitura, envio e economia de bateria em tarefas.',
+      en: 'Each protocol under comparison (mioty, LoRaWAN, NB-IoT and Sigfox) has its own sensor devices in the field. On the LoRaWAN and NB-IoT devices, built on PCBs I designed, an ESP32 reads temperature and humidity (DHT22), light (LDR) and power draw (INA226), and the C++/FreeRTOS firmware splits reading, sending and battery saving into tasks.',
+    },
+  },
+  network: {
+    title: { pt: 'Network servers', en: 'Network servers' },
+    tech: 'mioty Go · ChirpStack · TIM/Vivo · Sigfox Cloud',
+    body: {
+      pt: 'Cada rede tem o seu: mioty Go para o mioty, o ChirpStack v4 (que implantei com Docker, na faixa AU915) para o LoRaWAN, a rede da operadora (TIM e Vivo) para o NB-IoT e a Sigfox Cloud para o Sigfox. Eles recebem os pacotes de rádio, identificam o dispositivo e passam a mensagem adiante por MQTT.',
+      en: 'Each network has its own: mioty Go for mioty, ChirpStack v4 (which I deployed with Docker, on the AU915 band) for LoRaWAN, the carrier network (TIM and Vivo) for NB-IoT and Sigfox Cloud for Sigfox. They receive the radio packets, identify the device and pass the message on over MQTT.',
+    },
+  },
+  bridge: {
+    title: { pt: 'Bridge', en: 'Bridge' },
+    tech: 'MQTT (Mosquitto) · Python · Redis',
+    body: {
+      pt: 'Liga as quatro redes à aplicação. As mensagens chegam num broker MQTT, e um serviço em Python que escrevi consulta no Redis o mapeamento entre o identificador do dispositivo em cada rede e o sensor cadastrado na aplicação, converte tudo para um formato único e entrega ao servidor de aplicação por TCP. A tradução funciona nos dois sentidos, e a aplicação não precisa conhecer os detalhes de cada rede.',
+      en: "Connects the four networks to the application. Messages arrive at an MQTT broker, and a Python service I wrote looks up in Redis the mapping between each network's device ID and the sensor registered in the application, converts everything to a single format and delivers it to the application server over TCP. The translation works both ways, and the application doesn't need to know the details of each network.",
+    },
+  },
+  app: {
+    title: { pt: 'Servidor de aplicação', en: 'Application server' },
+    tech: 'Kafka · Spring · PostgreSQL/TimescaleDB · Spring Boot',
+    body: {
+      pt: 'Recebe, guarda e serve os dados; construí essa camada. As mensagens entram num Kafka, que as mantém em ordem num log: se o processamento atrasa, as leituras esperam em vez de se perder. Um serviço em Spring as consome e grava no PostgreSQL com TimescaleDB, feito para séries temporais, e uma API REST em Spring Boot, documentada com Swagger, entrega os dados à interface.',
+      en: 'Receives, stores and serves the data; I built this layer. Messages enter a Kafka log that keeps them in order: if processing falls behind, readings wait instead of being lost. A Spring service consumes them and writes them to PostgreSQL with TimescaleDB, built for time series, and a Spring Boot REST API, documented with Swagger, serves the data to the interface.',
+    },
+  },
+  ui: {
+    title: { pt: 'Interface web', en: 'Web interface' },
+    tech: 'Angular',
+    body: {
+      pt: 'A interface, em Angular, consulta a API por HTTP e mostra as leituras de cada sensor e de cada protocolo. Por ela, os usuários também enviam comandos aos atuadores e atualizam os dispositivos; esses pedidos fazem o mesmo caminho no sentido inverso, da API até o campo.',
+      en: 'The Angular interface queries the API over HTTP and shows the readings for each sensor and each protocol. Users can also send commands to actuators and update the devices from it; these requests travel the same path in reverse, from the API down to the field.',
+    },
+  },
+  monitoring: {
+    title: { pt: 'Monitoramento', en: 'Monitoring' },
+    tech: 'Prometheus · Grafana',
+    body: {
+      pt: 'O Prometheus coleta periodicamente as métricas dos serviços do servidor de aplicação, e o Grafana as mostra em dashboards. Além de acompanhar a saúde do testbed, isso dá observabilidade sobre os próprios dados: quantas leituras chegam de cada protocolo, com que atraso e onde houve falhas de entrega.',
+      en: "Prometheus periodically scrapes metrics from the application server's services, and Grafana shows them in dashboards. Besides tracking the testbed's health, this gives observability over the data itself: how many readings arrive from each protocol, with what delay, and where deliveries failed.",
+    },
+  },
+}
+
 export const journeyDetails: Record<string, JourneyDetail> = {
   lasdpc: {
     intro: {
@@ -125,10 +168,11 @@ export const journeyDetails: Record<string, JourneyDetail> = {
       en: 'FAPESP-funded undergraduate research at LaSDPC, ICMC-USP, advised by Prof. Júlio Cézar Estrella, on “Long-Range Connectivity for Precision Coffee Farming”. It compares four LPWAN protocols (LoRaWAN, NB-IoT, Sigfox and mioty) in range, RSSI/SNR, packet delivery, latency and energy consumption.',
     },
     stats: [
-      { value: '4', label: { pt: 'protocolos LPWAN comparados', en: 'LPWAN protocols compared' }, icon: 'antenna', section: 'Infrastructure' },
+      { value: '4', label: { pt: 'protocolos LPWAN comparados', en: 'LPWAN protocols compared' }, icon: 'antenna', part: 'nodes' },
       { value: 'FAPESP', label: { pt: 'bolsa de iniciação científica', en: 'undergraduate research grant' }, icon: 'graduation' },
-      { value: 'AU915', label: { pt: 'faixa LoRaWAN brasileira', en: 'Brazilian LoRaWAN band' }, icon: 'wave', section: 'Infrastructure' },
+      { value: 'AU915', label: { pt: 'faixa LoRaWAN brasileira', en: 'Brazilian LoRaWAN band' }, icon: 'wave', part: 'network' },
     ],
+    architecture: true,
     sections: [
       {
         title: { pt: 'Revisão da literatura', en: 'Literature review' },
@@ -497,6 +541,7 @@ export const journeyDetails: Record<string, JourneyDetail> = {
       },
       {
         title: { pt: 'Atena, CubeSat 2U (2º lugar na LASC 2026)', en: 'Atena, 2U CubeSat (2nd place at LASC 2026)' },
+        anchor: 'atena',
         period: { pt: '03/2026 – 09/2026', en: '03/2026 – 09/2026' },
         body: {
           pt: 'O Atena voou a bordo do Atlas. Co-desenvolvi o firmware, que estima altitude, velocidade e orientação e reconhece cada fase do voo, e projetei a telemetria LoRa bidirecional (duplex): o satélite envia seus dados e, entre um pacote e outro, escuta a estação de solo. O Atena voou e se comunicou com sucesso com a nossa estação.',

@@ -6,6 +6,7 @@ import Hero from './components/Hero.tsx'
 import About from './components/About.tsx'
 import Projects from './components/Projects.tsx'
 import ExperienceSection from './components/Experience.tsx'
+import Awards from './components/Awards.tsx'
 import Skills from './components/Skills.tsx'
 import Contact from './components/Contact.tsx'
 import JourneyPage from './components/JourneyPage.tsx'
@@ -33,7 +34,6 @@ export default function App() {
 
   useEffect(() => {
     document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en'
-    document.title = lang === 'pt' ? 'Vitor Vaz — Portfólio' : 'Vitor Vaz — Portfolio'
   }, [lang])
 
   useEffect(() => {
@@ -57,12 +57,13 @@ export default function App() {
       <Header t={t} lang={lang} theme={theme} onToggleLang={toggleLang} onToggleTheme={toggleTheme} />
       <main>
         {route.page === 'journey' ? (
-          <JourneyPage slug={route.slug} t={t} lang={lang} />
+          <JourneyPage slug={route.slug} section={route.section} t={t} lang={lang} />
         ) : (
           <>
             <Hero t={t} lang={lang} />
             <About t={t} lang={lang} />
             <ExperienceSection t={t} lang={lang} />
+            <Awards t={t} lang={lang} />
             <Projects t={t} lang={lang} />
             <Skills t={t} lang={lang} />
             <Contact t={t} lang={lang} />

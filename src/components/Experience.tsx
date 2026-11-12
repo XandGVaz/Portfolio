@@ -1,5 +1,5 @@
 import { useEffect, useRef, type ReactNode } from 'react'
-import { awards, experience, projects, type JourneyIcon, type Lang, type Project, type UI } from '../content.ts'
+import { experience, projects, type JourneyIcon, type Lang, type Project, type UI } from '../content.ts'
 import {
   AntennaIcon,
   ArrowIcon,
@@ -22,7 +22,6 @@ const JOURNEY_ICONS: Record<JourneyIcon, typeof IoTIcon> = {
   chip: ChipIcon,
 }
 
-// Mini cards: o ícone do selo do projeto (prêmio, métrica) ou, sem selo, código.
 const PROJECT_ICONS = {
   trophy: TrophyIcon,
   target: TargetIcon,
@@ -31,12 +30,9 @@ const PROJECT_ICONS = {
   speed: SpeedIcon,
 }
 
-// Projetos de cada jornada, com os que têm selo primeiro (mesma ordem da seção Projetos).
 const projectsOf = (slug: string): Project[] =>
   projects.filter((p) => p.journey === slug).sort((a, b) => Number(!!b.badge) - Number(!!a.badge))
 
-// Linha horizontal de mini cards. Quando não cabem, a linha rola, e a borda do
-// lado que ainda tem itens escondidos esmaece para indicar que há mais.
 function ProjectRow({ children }: { children: ReactNode }) {
   const row = useRef<HTMLUListElement>(null)
   useEffect(() => {
@@ -62,8 +58,6 @@ function ProjectRow({ children }: { children: ReactNode }) {
 export default function ExperienceSection({ t, lang }: { t: UI; lang: Lang }) {
   const list = useRef<HTMLOListElement>(null)
 
-  // Os cards entram deslizando do seu lado quando aparecem na tela (uma vez só).
-  // Sem IntersectionObserver, ou com animação reduzida, ficam visíveis direto.
   useEffect(() => {
     const el = list.current
     if (!el || !('IntersectionObserver' in window)) return
@@ -88,8 +82,6 @@ export default function ExperienceSection({ t, lang }: { t: UI; lang: Lang }) {
       <div className="container">
         <SectionHeading eyebrow={t.experienceEyebrow} title={t.experienceTitle} />
 
-        {/* Linha vertical no centro; os cards alternam entre esquerda e direita.
-            O card inteiro leva à subpágina; os mini cards, aos projetos. */}
         <ol className="journey" ref={list}>
           {experience.map((e, i) => {
             const Icon = JOURNEY_ICONS[e.icon]
@@ -99,9 +91,6 @@ export default function ExperienceSection({ t, lang }: { t: UI; lang: Lang }) {
                 <span className="journey-node" aria-hidden="true">
                   <Icon size={18} />
                 </span>
-                {/* O card é um contêiner: o link "ver a jornada" se estica sobre ele
-                    inteiro (::after), e os mini cards de projeto ficam por cima,
-                    como links próprios — links não podem ser aninhados. */}
                 <div className="card journey-card">
                   <div className="journey-top">
                     <span className="pill mono">{e.period[lang]}</span>
@@ -148,17 +137,6 @@ export default function ExperienceSection({ t, lang }: { t: UI; lang: Lang }) {
             )
           })}
         </ol>
-
-        <div className="card awards-card">
-          <h3 className="card-title">
-            <TrophyIcon size={18} /> {t.awardsTitle}
-          </h3>
-          <ul className="awards">
-            {awards.map((a) => (
-              <li key={a.en}>{a[lang]}</li>
-            ))}
-          </ul>
-        </div>
       </div>
     </section>
   )

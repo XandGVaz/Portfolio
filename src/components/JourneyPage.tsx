@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { experience, type JourneyIcon, type Lang, type UI } from '../content.ts'
-import { journeyDetails, type FlightStage, type JourneyStat, type StatIcon } from '../journey.ts'
+import { journeyDetails, type ArchPart, type FlightStage, type JourneyStat, type StatIcon } from '../journey.ts'
 import {
   AltitudeIcon,
   AntennaIcon,
@@ -30,12 +30,11 @@ import chipPng from '../assets/journey-icons/chip.png'
 import Carousel from './Carousel.tsx'
 import Checkpoints from './Checkpoints.tsx'
 import FlightChart from './FlightChart.tsx'
+import ArchFlow from './ArchFlow.tsx'
 
 const scrollBehavior = (): ScrollBehavior =>
   window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
 
-
-// Ícone principal animado (GIF); com animação reduzida, a versão parada (PNG).
 const HERO_GIFS: Record<JourneyIcon, { gif: string; still: string }> = {
   iot: { gif: iotGif, still: iotPng },
   rocket: { gif: rocketGif, still: rocketPng },
@@ -43,7 +42,6 @@ const HERO_GIFS: Record<JourneyIcon, { gif: string; still: string }> = {
   chip: { gif: chipGif, still: chipPng },
 }
 
-// Ícone de cada jornada nos botões "Anterior"/"Próxima" (os mesmos da linha do tempo).
 const JOURNEY_ICONS: Record<JourneyIcon, typeof RocketIcon> = {
   iot: IoTIcon,
   rocket: RocketIcon,
@@ -76,27 +74,47 @@ function PagerIcon({ icon }: { icon: JourneyIcon }) {
   )
 }
 
-export default function JourneyPage({ slug, t, lang }: { slug: string; t: UI; lang: Lang }) {
+export default function JourneyPage({
+  slug,
+  section,
+  t,
+  lang,
+}: {
+  slug: string
+  section: string | null
+  t: UI
+  lang: Lang
+}) {
   const index = experience.findIndex((e) => e.slug === slug)
   const exp = experience[index]
   const detail = journeyDetails[slug]
 
-  // Fase selecionada no gráfico de voo (null = voo inteiro, sem card destacado).
   const [stage, setStage] = useState<FlightStage | null>(null)
   const chart = useRef<HTMLDivElement>(null)
   useEffect(() => setStage(null), [slug])
 
-  // Checkpoint destacado por um instante depois de um card ou do gráfico levar até ele.
+  const [part, setPart] = useState<ArchPart>('overview')
+  const arch = useRef<HTMLDivElement>(null)
+  useEffect(() => setPart('overview'), [slug])
+
   const [flash, setFlash] = useState<number | null>(null)
   const flashTimer = useRef(0)
   useEffect(() => () => window.clearTimeout(flashTimer.current), [])
   const showCheckpoint = (i: number) => {
     document.getElementById(`checkpoint-${i}`)?.scrollIntoView({ behavior: scrollBehavior(), block: 'start' })
     window.clearTimeout(flashTimer.current)
-    setFlash(null) // pedir o mesmo checkpoint de novo reinicia o destaque
+    setFlash(null)
     requestAnimationFrame(() => setFlash(i))
     flashTimer.current = window.setTimeout(() => setFlash(null), 1800)
   }
+
+  useEffect(() => {
+    if (!section || !detail) return
+    const i = detail.sections.filter((s) => s.timeline !== false).findIndex((s) => s.anchor === section)
+    if (i < 0) return
+    const id = window.setTimeout(() => showCheckpoint(i), 150)
+    return () => window.clearTimeout(id)
+  }, [slug, section])
 
   if (!exp || !detail) {
     return (
@@ -116,17 +134,23 @@ export default function JourneyPage({ slug, t, lang }: { slug: string; t: UI; la
   const timeline = detail.sections.filter((s) => s.timeline !== false)
   const extras = detail.sections.filter((s) => s.timeline === false)
   const hasChart = !!detail.flightChart
+  const hasArch = !!detail.architecture
   const checkpointOf = (title: string) => timeline.findIndex((s) => s.title.en === title)
   const atlas = checkpointOf('Atlas, 3 km rocket (LASC 2026)')
 
-  // Card de número: seleciona uma fase no gráfico (e o traz para a tela) ou
-  // leva ao checkpoint de onde o número vem.
   const statAction = (s: JourneyStat): (() => void) | null => {
     if (hasChart && s.flight) {
       const target = s.flight
       return () => {
         setStage((cur) => (cur === target ? null : target))
         chart.current?.scrollIntoView({ behavior: scrollBehavior(), block: 'nearest' })
+      }
+    }
+    if (hasArch && s.part) {
+      const target = s.part
+      return () => {
+        setPart((cur) => (cur === target ? 'overview' : target))
+        arch.current?.scrollIntoView({ behavior: scrollBehavior(), block: 'nearest' })
       }
     }
     const i = s.section ? checkpointOf(s.section) : -1
@@ -177,16 +201,19 @@ export default function JourneyPage({ slug, t, lang }: { slug: string; t: UI; la
                 )
               }
               const toFlight = hasChart && !!s.flight
-              const on = toFlight && stage === s.flight
+              const toArch = hasArch && !!s.part
+              const on = (toFlight && stage === s.flight) || (toArch && part === s.part)
+              const controls = toFlight ? 'flight-stage' : toArch ? 'arch-info' : undefined
+              const hint = toFlight ? t.statSeeFlight : toArch ? t.statSeeArch : t.statSeeCheckpoint
               return (
                 <li key={s.label.en}>
                   <button
                     type="button"
                     className={`journey-stat is-action ${on ? 'is-on' : ''}`}
                     onClick={action}
-                    aria-pressed={toFlight ? on : undefined}
-                    aria-controls={toFlight ? 'flight-stage' : undefined}
-                    aria-label={`${value} ${s.label[lang]}: ${toFlight ? t.statSeeFlight : t.statSeeCheckpoint}`}
+                    aria-pressed={controls ? on : undefined}
+                    aria-controls={controls}
+                    aria-label={`${value} ${s.label[lang]}: ${hint}`}
                   >
                     {body}
                   </button>
@@ -206,14 +233,18 @@ export default function JourneyPage({ slug, t, lang }: { slug: string; t: UI; la
               />
             </div>
           )}
+
+          {hasArch && (
+            <div ref={arch} className="flight-wrap">
+              <ArchFlow t={t} lang={lang} part={part} onPart={setPart} />
+            </div>
+          )}
         </div>
       </header>
 
       <div className="container journey-body">
-        {/* Linha do tempo de checkpoints: só as seções que são etapas no tempo. */}
         <Checkpoints sections={timeline} t={t} lang={lang} carouselLabels={carouselLabels} flash={flash} />
 
-        {/* Fora da linha do tempo: seções atemporais (ex.: bibliotecas) e a stack. */}
         <div className="journey-extras">
           {extras.map((s) => (
             <section key={s.title.en} className="card journey-extra">

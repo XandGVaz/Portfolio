@@ -15,8 +15,6 @@ import firmwarePng from '../assets/about/firmware.png'
 import webGif from '../assets/about/web.gif'
 import webPng from '../assets/about/web.png'
 
-// Ícones animados (GIF) dos mini cards; com animação reduzida no sistema,
-// o navegador usa a versão parada (PNG).
 const GIFS = {
   iot: { gif: iotGif, still: iotPng },
   rocket: { gif: rocketGif, still: rocketPng },
@@ -36,18 +34,12 @@ function AnimatedIcon({ name }: { name: keyof typeof GIFS }) {
   )
 }
 
-// "Sobre o Vitor", interativo:
-// - na barra superior, mini cards com GIF (sem links): clicar abre, logo abaixo
-//   da barra, um resumo daquela área; Esc, clique fora ou novo clique fecham;
-// - o card do LaSDPC é um link para a subpágina; o da USP abre a lista de
-//   grupos de extensão, cada um com link para a sua subpágina.
 export default function About({ t, lang }: { t: UI; lang: Lang }) {
   const [groupsOpen, setGroupsOpen] = useState(false)
   const [mini, setMini] = useState<string | null>(null)
   const bar = useRef<HTMLDivElement>(null)
   const current = about.minis.find((m) => m.icon === mini)
 
-  // Fecha o resumo do mini card com Esc ou clicando fora da barra/do resumo.
   useEffect(() => {
     if (!mini) return
     const onKey = (e: KeyboardEvent) => {
@@ -76,7 +68,6 @@ export default function About({ t, lang }: { t: UI; lang: Lang }) {
                 <i /> <i /> <i />
               </span>
               <span className="mono window-path">{t.aboutFile}</span>
-              {/* mini cards com GIF: botões que abrem um resumo abaixo da barra */}
               <ul className="window-tags">
                 {about.minis.map((m) => {
                   const on = mini === m.icon

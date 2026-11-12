@@ -2,8 +2,6 @@ import { profile, type Lang, type UI } from '../content.ts'
 import photo from '../assets/vitor.webp'
 import { GitHubIcon, LinkedInIcon, MailIcon } from './Icons.tsx'
 import ResumeMenu from './ResumeMenu.tsx'
-// Terminal animado: sensor → nuvem → computador (gerado por scripts/terminal-gif.py)
-// (versão larga, 1000×520, e compacta para celular, 600×462, com texto maior)
 import pipelinePtGif from '../assets/about/pipeline-pt.gif'
 import pipelinePtPng from '../assets/about/pipeline-pt.png'
 import pipelinePtSmGif from '../assets/about/pipeline-pt-sm.gif'
@@ -20,7 +18,6 @@ const PIPELINE = {
 const SMALL = '(max-width: 560px)'
 const STILL = '(prefers-reduced-motion: reduce)'
 
-// "texto **destaque** texto" → texto normal intercalado com <strong>.
 function Emphasis({ text }: { text: string }) {
   return (
     <>
@@ -33,8 +30,6 @@ export default function Hero({ t, lang }: { t: UI; lang: Lang }) {
   return (
     <section id="top" className="hero">
       <div className="container container-hero hero-grid">
-        {/* card do topo em forma de janela (como a de "Sobre Mim"): foto + "Do Hardware à Nuvem"
-            e, embaixo, o terminal animado */}
         <figure className="card hero-card">
           <div className="window-bar">
             <span className="window-dots" aria-hidden="true">
@@ -50,9 +45,6 @@ export default function Hero({ t, lang }: { t: UI; lang: Lang }) {
               <figcaption className="hero-tagline">{t.tagline}</figcaption>
             </div>
           </div>
-          {/* terminal na largura toda da janela, de borda a borda.
-              Versão compacta em telas estreitas; com animação reduzida, o quadro parado (PNG).
-              O navegador usa a primeira <source> cuja condição bate. */}
           <picture className="hero-terminal">
             <source srcSet={PIPELINE[lang].smStill} media={`${STILL} and ${SMALL}`} width={600} height={462} />
             <source srcSet={PIPELINE[lang].still} media={STILL} width={1000} height={520} />
@@ -63,8 +55,6 @@ export default function Hero({ t, lang }: { t: UI; lang: Lang }) {
         <div className="hero-text">
           <p className="eyebrow">{t.role}</p>
           <h1 className="hero-name">
-            {/* Cada metade do nome não quebra internamente: se faltar espaço,
-                a quebra acontece só entre "Vitor Alexandre" e "Garcia Vaz". */}
             <span>Vitor Alexandre</span> <span>Garcia Vaz</span>
           </h1>
           <p className="hero-headline">

@@ -2,7 +2,6 @@ import { useEffect, useId, useRef, useState } from 'react'
 import { resumes, type Lang, type UI } from '../content.ts'
 import { ChevronIcon, DownloadIcon } from './Icons.tsx'
 
-// Botão "Baixar CV" que abre um menu com as áreas de currículo disponíveis.
 export default function ResumeMenu({ t, lang, variant = 'ghost' }: { t: UI; lang: Lang; variant?: 'primary' | 'ghost' }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)

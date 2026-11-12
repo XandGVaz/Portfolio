@@ -12,9 +12,6 @@ const GROUP_ICONS: Record<SkillIcon, typeof CodeIcon> = {
   tools: ToolIcon,
 }
 
-// Tecnologias interativas: clicar numa tecnologia abre um painel com links para
-// os projetos e os lugares da jornada onde ela foi usada. Tecnologias sem uso
-// registrado aparecem sem clique.
 export default function Skills({ t, lang }: { t: UI; lang: Lang }) {
   const [selected, setSelected] = useState<string | null>(null)
 

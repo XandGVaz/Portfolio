@@ -2,8 +2,6 @@ import { useEffect } from 'react'
 import type { Lang } from '../content.ts'
 import type { JourneyImage } from '../journey.ts'
 
-// Visualização ampliada de uma imagem da galeria. Fecha com Esc, clique fora ou no botão;
-// as setas do teclado navegam entre as imagens.
 interface Props {
   images: JourneyImage[]
   index: number

@@ -1,4 +1,3 @@
-// Ícones inline (sem dependências). Todos herdam a cor do texto.
 type P = { size?: number }
 
 export const GitHubIcon = ({ size = 18 }: P) => (
@@ -54,7 +53,6 @@ export const TrophyIcon = ({ size = 22 }: P) => (
   </svg>
 )
 
-// Alvo com flecha cravada no centro.
 export const TargetIcon = ({ size = 22 }: P) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <circle cx="11" cy="13" r="9" />
@@ -65,7 +63,6 @@ export const TargetIcon = ({ size = 22 }: P) => (
   </svg>
 )
 
-// Antena (torre) emitindo ondas de rádio.
 export const AntennaIcon = ({ size = 22 }: P) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M4.9 16.1a10 10 0 0 1 0-14.2" />
@@ -78,7 +75,6 @@ export const AntennaIcon = ({ size = 22 }: P) => (
   </svg>
 )
 
-// Gráfico de linha em alta.
 export const GrowthIcon = ({ size = 22 }: P) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="m22 7-8.5 8.5-5-5L2 17" />
@@ -86,7 +82,6 @@ export const GrowthIcon = ({ size = 22 }: P) => (
   </svg>
 )
 
-// Velocímetro com o ponteiro no alto.
 export const SpeedIcon = ({ size = 22 }: P) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M3.34 19a10 10 0 1 1 17.32 0" />
@@ -109,7 +104,6 @@ export const ChevronIcon = ({ size = 16 }: P) => (
   </svg>
 )
 
-// IoT: dispositivo com antena emitindo sinal.
 export const IoTIcon = ({ size = 18 }: P) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <rect x="4" y="15" width="16" height="6" rx="1.5" />
@@ -151,7 +145,6 @@ export const SparklesIcon = ({ size = 18 }: P) => (
   </svg>
 )
 
-// Bandeira de checkpoint (linha do tempo das subpáginas da jornada).
 export const FlagIcon = ({ size = 16 }: P) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M4 22V4" />
@@ -192,7 +185,27 @@ export const ToolIcon = ({ size = 18 }: P) => (
   </svg>
 )
 
-// Capelo de formatura (bolsa de pesquisa).
+export const BridgeIcon = ({ size = 18 }: P) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M4 8h15M15 4l4 4-4 4" />
+    <path d="M20 16H5M9 12l-4 4 4 4" />
+  </svg>
+)
+
+export const ServerIcon = ({ size = 18 }: P) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="3" y="3" width="18" height="8" rx="2" />
+    <rect x="3" y="13" width="18" height="8" rx="2" />
+    <path d="M7 7h.01M7 17h.01M11 7h6M11 17h6" />
+  </svg>
+)
+
+export const ActivityIcon = ({ size = 18 }: P) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M3 12h4l3-8 4 16 3-8h4" />
+  </svg>
+)
+
 export const GraduationIcon = ({ size = 22 }: P) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M22 10 12 5 2 10l10 5 10-5z" />
@@ -201,7 +214,6 @@ export const GraduationIcon = ({ size = 22 }: P) => (
   </svg>
 )
 
-// Onda de rádio (faixa de frequência).
 export const WaveIcon = ({ size = 22 }: P) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M2 12c1.5-4 3-4 4.5 0s3 4 4.5 0 3-4 4.5 0 3 4 4.5 0" />
@@ -210,7 +222,6 @@ export const WaveIcon = ({ size = 22 }: P) => (
   </svg>
 )
 
-// Montanha com seta para cima (altitude, apogeu).
 export const AltitudeIcon = ({ size = 22 }: P) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="m2 21 6.5-10 4 6 2.5-3.5L22 21z" />
@@ -218,14 +229,12 @@ export const AltitudeIcon = ({ size = 22 }: P) => (
   </svg>
 )
 
-// Raio (pagamento instantâneo).
 export const BoltIcon = ({ size = 22 }: P) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M13 2 4 14h7l-1 8 9-12h-7z" />
   </svg>
 )
 
-// Balão meteorológico com sonda pendurada.
 export const BalloonIcon = ({ size = 22 }: P) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <circle cx="12" cy="7.5" r="5.5" />
@@ -235,7 +244,6 @@ export const BalloonIcon = ({ size = 22 }: P) => (
   </svg>
 )
 
-// Cédula (dinheiro real).
 export const MoneyIcon = ({ size = 22 }: P) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <rect x="2" y="6" width="20" height="12" rx="2" />
@@ -244,7 +252,6 @@ export const MoneyIcon = ({ size = 22 }: P) => (
   </svg>
 )
 
-// Caixa de mercadoria (estoque).
 export const StockIcon = ({ size = 22 }: P) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M21 8 12 3 3 8v8l9 5 9-5z" />

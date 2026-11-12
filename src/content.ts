@@ -1,6 +1,3 @@
-// Todo o conteúdo do site fica aqui, em PT e EN.
-// Para editar textos, projetos ou experiências, mexa apenas neste arquivo.
-
 export type Lang = 'pt' | 'en'
 export type Localized<T = string> = Record<Lang, T>
 
@@ -10,7 +7,6 @@ export interface Project {
   id: string
   title: Localized
   context: string
-  // Nome curto e jornada (slug em `experience`) para o mini card no card da jornada.
   short: Localized
   journey?: string
   period: string
@@ -18,7 +14,6 @@ export interface Project {
   stack: string[]
   summary: Localized
   highlights: Localized<string[]>
-  // Selo de destaque (prêmio, conquista). `icon` escolhe o ícone exibido.
   badge?: { icon: 'trophy' | 'target' | 'antenna' | 'growth' | 'speed'; title: Localized; detail: Localized }
   repo?: string
 }
@@ -26,7 +21,7 @@ export interface Project {
 export type JourneyIcon = 'iot' | 'rocket' | 'cart' | 'chip'
 
 export interface Experience {
-  slug: string // rota da subpágina: #/journey/<slug> (conteúdo em journey.ts)
+  slug: string
   role: Localized
   org: Localized
   unit: string
@@ -47,14 +42,9 @@ export const ui = {
   pt: {
     nav: { about: 'Sobre', projects: 'Projetos', experience: 'Jornada', skills: 'Tecnologias', contact: 'Contato' },
     role: 'Engenharia de Computação · USP São Carlos',
-    // Frase de destaque no card da foto, no topo da página.
     tagline: 'Do Hardware à Nuvem',
-    // Texto alternativo do terminal animado no mesmo card.
     pipelineAlt: 'Animação em estilo terminal: um sensor envia uma leitura de temperatura e umidade por rádio para a nuvem, que a passa por um broker de mensagens, a guarda num banco de dados e a entrega por HTTPS a um computador, que atualiza o painel.',
-    // Cada item fica em uma linha própria.
     headline: ['Desenvolvimento Web, IoT e Sistemas\u00a0Embarcados'],
-    // Cada item vira um parágrafo no topo da página.
-    // Resumo curto; trechos entre **asteriscos** aparecem em destaque.
     summary:
       'Sou apaixonado por **IoT**, **aviônica** e **resolução de problemas**. Gosto de enxergar o sistema inteiro, do sensor no campo ao dado na tela, e de transformar desafios técnicos em soluções que funcionam de verdade.',
     ctaProjects: 'Ver projetos',
@@ -90,6 +80,25 @@ export const ui = {
     flightSeeAtlas: 'Ver o Atlas na linha do tempo',
     flightEvents: { liftoff: 'Decolagem', burnout: 'Fim da queima', apogee: 'Apogeu', apogeeRef: 'Altímetro comercial', drogue: 'Drogue', main: 'Principal', landing: 'Pouso' },
     flightLocale: 'pt-BR',
+    archTitle: 'O caminho de uma leitura',
+    archLead: 'Do nó em campo à interface: cada ponto é uma leitura, na cor do seu protocolo. Escolha uma camada, ou clique nela no diagrama, para ver como funciona.',
+    archFile: '~/lasdpc/testbed/fluxo-de-dados',
+    archPartsLabel: 'Camadas da arquitetura',
+    archPlay: 'Reproduzir o fluxo',
+    archPause: 'Pausar o fluxo',
+    archAlt: 'Diagrama animado da arquitetura do testbed, em camadas: nós mioty, LoRaWAN, NB-IoT e Sigfox enviam leituras aos network servers, que as passam por MQTT à bridge; a bridge as entrega por TCP ao servidor de aplicação, e a interface web as consulta por HTTP. O monitoramento acompanha o servidor de aplicação.',
+    archDevices: 'Dispositivos {p}',
+    statSeeArch: 'ver na arquitetura',
+    flightFile: '~/topus/atlas/voo_lasc2026.log',
+    flightPlay: 'Reproduzir o voo',
+    flightPause: 'Pausar',
+    flightReplay: 'Reproduzir de novo',
+    flightSpeed: 'Velocidade da reprodução',
+    flightRealTime: 'o tempo real',
+    flightSeek: 'Tempo de voo',
+    flightAlt: 'ALT',
+    flightPad: 'Na rampa',
+    flightIgnition: 'Ignição',
     checkpoint: 'Checkpoint',
     photosPrev: 'Fotos anteriores',
     photosNext: 'Próximas fotos',
@@ -98,7 +107,10 @@ export const ui = {
     journeyNext: 'Próxima',
     journeyNotFound: 'Esta parte da jornada não existe.',
     closeImage: 'Fechar imagem',
-    awardsTitle: 'Prêmios',
+    awardsEyebrow: 'Conquistas',
+    awardsTitle: ['Prêmios', 'e Reconhecimentos'],
+    awardsLead: 'Clique em um prêmio para ver o artigo ou o projeto por trás dele.',
+    awardsNewTab: '(abre em nova aba)',
     skillsEyebrow: 'Stack técnica',
     skillsTitle: ['Tecnologias', 'e Ferramentas'],
     skillsLead: 'Clique numa tecnologia para ver onde eu a usei.',
@@ -115,7 +127,6 @@ export const ui = {
   en: {
     nav: { about: 'About', projects: 'Projects', experience: 'Journey', skills: 'Skills', contact: 'Contact' },
     role: 'Computer Engineering · University of São Paulo',
-    // Frase de destaque no card da foto, no topo da página.
     tagline: 'From Hardware to the Cloud',
     pipelineAlt: 'Terminal-style animation: a sensor sends a temperature and humidity reading over radio to the cloud, which passes it through a message broker, stores it in a database and delivers it over HTTPS to a computer that updates its dashboard.',
     headline: ['Web Development, IoT and Embedded\u00a0Systems'],
@@ -154,6 +165,25 @@ export const ui = {
     flightSeeAtlas: 'See Atlas on the timeline',
     flightEvents: { liftoff: 'Lift-off', burnout: 'Burnout', apogee: 'Apogee', apogeeRef: 'Commercial altimeter', drogue: 'Drogue', main: 'Main', landing: 'Landing' },
     flightLocale: 'en-US',
+    archTitle: 'The path of a reading',
+    archLead: 'From the node in the field to the interface: each dot is a reading, in the color of its protocol. Pick a layer, or click it in the diagram, to see how it works.',
+    archFile: '~/lasdpc/testbed/data-flow',
+    archPartsLabel: 'Architecture layers',
+    archPlay: 'Play the flow',
+    archPause: 'Pause the flow',
+    archAlt: 'Animated layered diagram of the testbed architecture: mioty, LoRaWAN, NB-IoT and Sigfox sensor devices send readings to the network servers, which pass them over MQTT to the bridge; the bridge delivers them over TCP to the application server, and the web interface queries them over HTTP. Monitoring watches the application server.',
+    archDevices: '{p} devices',
+    statSeeArch: 'see it in the architecture',
+    flightFile: '~/topus/atlas/flight_lasc2026.log',
+    flightPlay: 'Play the flight',
+    flightPause: 'Pause',
+    flightReplay: 'Play again',
+    flightSpeed: 'Playback speed',
+    flightRealTime: 'real time',
+    flightSeek: 'Flight time',
+    flightAlt: 'ALT',
+    flightPad: 'On the pad',
+    flightIgnition: 'Ignition',
     checkpoint: 'Checkpoint',
     photosPrev: 'Previous photos',
     photosNext: 'Next photos',
@@ -162,7 +192,10 @@ export const ui = {
     journeyNext: 'Next',
     journeyNotFound: 'This part of the journey does not exist.',
     closeImage: 'Close image',
-    awardsTitle: 'Awards',
+    awardsEyebrow: 'Achievements',
+    awardsTitle: ['Awards', '& Recognition'],
+    awardsLead: 'Click an award to see the paper or the project behind it.',
+    awardsNewTab: '(opens in a new tab)',
     skillsEyebrow: 'Tech stack',
     skillsTitle: ['Skills', '& Tools'],
     skillsLead: 'Click a technology to see where I used it.',
@@ -180,7 +213,6 @@ export const ui = {
 
 export type UI = (typeof ui)['pt']
 
-// Ordenados pela frequência com que aparecem nos currículos.
 export const projects: Project[] = [
   {
     id: 'iot-platform',
@@ -481,7 +513,6 @@ export const experience: Experience[] = [
   },
 ]
 
-// Seção "Sobre o Vitor".
 export const about = {
   title: {
     pt: 'Engenheiro de Computação em Formação',
@@ -499,8 +530,6 @@ export const about = {
       'Day to day, I use AI agents as a working tool, from fault diagnosis to documentation, always reviewing and integrating what they produce.',
     ],
   } satisfies Localized<string[]>,
-  // Mini cards da barra do card (com GIF). Clicar abre `detail` logo abaixo da barra.
-  // O último (`highlight`) é o selo de pesquisador, com destaque azul.
   minis: [
     {
       icon: 'rocket',
@@ -556,7 +585,7 @@ export const about = {
       title: { pt: 'Universidade de São Paulo (USP)', en: 'University of São Paulo (USP)' },
       subtitle: { pt: 'Bacharelado em Engenharia de Computação', en: "Bachelor's in Computer Engineering" },
       note: { pt: 'EESC e ICMC · conclusão prevista para 2027', en: 'EESC and ICMC · expected graduation in 2027' },
-      groups: ['zenith', 'topus', 'saecomp'], // grupos de extensão (slugs da jornada)
+      groups: ['zenith', 'topus', 'saecomp'],
     },
     {
       period: { pt: '2025 – atual', en: '2025 – present' },
@@ -577,14 +606,44 @@ export const about = {
   }[],
 }
 
-export const awards: Localized<string>[] = [
+export interface Award {
+  icon: 'paper' | 'satellite'
+  title: Localized
+  event: string
+  year: string
+  detail: Localized
+  href: string
+  external?: boolean
+  cta: Localized
+}
+
+const PAPER_TITLE = 'From Deployment to Operation: A Reproducible IoT Testbed for Smart-Building HVAC with OTA and Observability'
+
+export const awards: Award[] = [
   {
-    pt: 'Best Paper Award — IEEE SmartIoT 2026, coautor de um trabalho sobre testbed IoT reprodutível e observável',
-    en: 'Best Paper Award — IEEE SmartIoT 2026, co-author of a paper on a reproducible, observable IoT testbed',
+    icon: 'paper',
+    title: { pt: 'Best Paper Award', en: 'Best Paper Award' },
+    event: 'IEEE SmartIoT 2026',
+    year: '2026',
+    detail: {
+      pt: `Coautor de “${PAPER_TITLE}”, sobre um testbed IoT reprodutível e observável, da implantação à operação.`,
+      en: `Co-author of “${PAPER_TITLE}”, on a reproducible, observable IoT testbed, from deployment to operation.`,
+    },
+    href: 'https://ieeexplore.ieee.org/document/11677784',
+    external: true,
+    cta: { pt: 'Ler o artigo no IEEE Xplore', en: 'Read the paper on IEEE Xplore' },
   },
   {
-    pt: '2º lugar na categoria CubeSat — Latin American Space Challenge 2026, com o CubeSat Atena (TOPUS)',
-    en: '2nd place, CubeSat category — Latin American Space Challenge 2026, with the Atena CubeSat (TOPUS)',
+    icon: 'satellite',
+    title: { pt: '2º lugar na categoria CubeSat', en: '2nd place, CubeSat category' },
+    event: 'Latin American Space Challenge',
+    year: '2026',
+    detail: {
+      pt: 'Com o Atena, CubeSat 2U da TOPUS que voou a bordo do foguete Atlas. Co-desenvolvi o firmware e projetei a telemetria LoRa bidirecional.',
+      en: "With Atena, TOPUS's 2U CubeSat that flew aboard the Atlas rocket. I co-developed its firmware and designed its two-way LoRa telemetry.",
+    },
+    href: '#/journey/topus/atena',
+    cta: { pt: 'Ver na jornada da TOPUS', en: 'See it in the TOPUS journey' },
   },
 ]
 
@@ -610,8 +669,6 @@ export const skills: { icon: SkillIcon; group: Localized; items: string[] }[] = 
   },
 ]
 
-// Currículos para download. Os PDFs ficam em public/cv/.
-// Se não houver versão em português (`pt`), o site oferece a versão em inglês.
 export interface Resume {
   id: string
   label: Localized

@@ -4,21 +4,14 @@ import type { JourneyImage, JourneySection } from '../journey.ts'
 import Carousel from './Carousel.tsx'
 import { CheckIcon, FlagIcon } from './Icons.tsx'
 
-// Linha do tempo vertical de checkpoints, interativa:
-// - acompanha a rolagem: checkpoints já passados ficam preenchidos (✓),
-//   o atual fica destacado e o trecho percorrido da linha fica em azul forte;
-//   ao terminar a linha do tempo, todos ficam marcados, inclusive o último;
-// - acima de cada título aparece o período da etapa;
-// - clicar num marcador rola até aquele checkpoint.
 interface Props {
   sections: JourneySection[]
   t: UI
   lang: Lang
   carouselLabels: { prev: string; next: string; open: string; close: string }
-  flash?: number | null // checkpoint destacado por um instante (vindo de um card ou do gráfico)
+  flash?: number | null
 }
 
-// Um checkpoint passa a ser o "atual" quando o topo dele cruza esta linha da tela.
 const ACTIVE_LINE = 0.4
 
 export default function Checkpoints({ sections, t, lang, carouselLabels, flash }: Props) {
@@ -34,9 +27,6 @@ export default function Checkpoints({ sections, t, lang, carouselLabels, flash }
       items.current.forEach((el, i) => {
         if (el && el.getBoundingClientRect().top <= line) current = i
       })
-      // Linha do tempo concluída: todos os checkpoints ficam marcados (✓), inclusive
-      // o último, quando o fim dele passa da linha ou a página chega ao fim.
-      // (`active` = número de checkpoints significa "nenhum atual, todos concluídos".)
       const last = items.current[sections.length - 1]
       const lastPassed = !!last && last.getBoundingClientRect().bottom <= line
       const atBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4

@@ -1,5 +1,3 @@
-// Título de seção centralizado, padrão de todas as seções principais:
-// rótulo em cima, título com a parte final em destaque, traço e texto de apoio opcional.
 export default function SectionHeading({ eyebrow, title, lead }: { eyebrow: string; title: string[]; lead?: string }) {
   const [first, ...rest] = title
   return (
